@@ -10,6 +10,10 @@
 
 
 bool is_prime(int n) {
+    if (n < 2) {
+        return false;
+    }
+
     for (int i = 2; i < n; i++) {
         if (n % i == 0) {
             return false;
@@ -87,13 +91,12 @@ int main(int argc, char **agrv) {
         // Convertendo o int n em string e adicionando um caracter ao final para indicar se
         // ele é primo ou não.
         sprintf(buffer, "%d%c", n, prime);
-        printf("Sending data: %s\n", buffer);
 
         send(new_socket, buffer, 20, 0);
     }
 	
     close(new_socket);
-	printf("[+]Closing the connection.\n");
+	printf("Closing the sockets.\n");
     close(sockfd);
 
 }

@@ -6,6 +6,10 @@
 
 
 bool is_prime(int n) {
+    if (n < 2) {
+        return false;
+    }
+
     for (int i = 2; i < n; i++) {
         if (n % i == 0) {
             return false;
@@ -75,12 +79,12 @@ int main(int argc, char **argv) {
         char str_number[20];
 
         for (int iter = 0; iter < n_iter; iter++) {
-            n += delta();
-            
             // Conversão de int para string
             sprintf(str_number, "%d", n);
-            
             write(fd[1], &str_number, 20);
+            printf("Producer sending the number %s\n", str_number);
+            
+            n += delta();
         }
 
         // Após as iterações, é enviado o número 0 para indicar que as escritas acabaram

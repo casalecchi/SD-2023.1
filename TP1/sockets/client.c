@@ -61,7 +61,6 @@ int main(int argc, char **argv) {
         printf("Sending data: %s\n", buffer);
 
         recv(client_socket, buffer, 20, 0);
-        printf("Receive data: %s\n", buffer);
 
         int n_size = strlen(buffer);
         if (buffer[n_size - 1] == 'p') {
@@ -74,6 +73,7 @@ int main(int argc, char **argv) {
     n = 0;
     sprintf(buffer, "%d", n);
     send(client_socket, buffer, 20, 0);
+    printf("Sending data: %s\n", buffer);
     close(client_socket);
 
     return 0;
