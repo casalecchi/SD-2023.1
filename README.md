@@ -43,4 +43,35 @@ A forma de utilizar o programa é da seguinte maneira:
 
 ### Guia de uso - Pipes
 
+Passando agora para o programa em que os pipes são utilizados, é necessário compilar o código, da mesma maneira em que foi feita no caso dos sinais.
+
+```shell
+gcc prod_cons.c -o prod_cons
+```
+
+Nesse programa é apenas necessário passar um argumento, que é o número de iterações que serão realizadas. Portanto o uso para 100 iterações fica da seguinte maneira:
+
+```shell
+./prod_cons 100
+```
+
 ### Guia de uso - Sockets
+
+Finalizando, para utilizar os programas do socket é necessário compilar os códigos, da mesma maneira em que foi feita nos casos acima.
+
+```shell
+gcc server.c -o server
+gcc client.c -o client
+```
+
+Primeiro é necessário executar o programa `server`, sem argumentos.
+
+```shell
+./server
+```
+
+Depois é a vez de executar o `client` passando o número de iterações que o programa irá executar.
+
+```shell
+./client 100
+```
