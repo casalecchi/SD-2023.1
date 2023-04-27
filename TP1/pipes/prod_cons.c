@@ -6,10 +6,6 @@
 
 
 bool is_prime(int n) {
-    if (n < 2) {
-        return false;
-    }
-
     for (int i = 2; i < n; i++) {
         if (n % i == 0) {
             return false;
@@ -54,7 +50,7 @@ int main(int argc, char **argv) {
         close(fd[1]);
 
         // Número X que será lido pelo pipe
-        int x;
+        int x = 1;
         while (x != 0) {
             // Como ele é enviado como string, o recebemos como string e depois convertemos para int
             char str_number[20];
@@ -69,7 +65,7 @@ int main(int argc, char **argv) {
         // Após ler o número 0, a ponta de leitura é fechada
         close(fd[0]);
     } else {
-        // Pai será o escritor/consumidor
+        // Pai será o escritor/produtor
 
         // Fechamos a ponta de leitura
         close(fd[0]);
@@ -85,8 +81,6 @@ int main(int argc, char **argv) {
             sprintf(str_number, "%d", n);
             
             write(fd[1], &str_number, 20);
-
-            // printf("Producer wrote %s.\n", str_number);
         }
 
         // Após as iterações, é enviado o número 0 para indicar que as escritas acabaram
