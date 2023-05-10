@@ -5,8 +5,6 @@
 #include <math.h>
 
 
-int buffer[10000000];
-
 int delta() {
     // Definir a seed baseada no tempo
     srand(time(NULL));
@@ -18,17 +16,34 @@ int delta() {
 
 
 int main(int argc, char **argv) {
-    for (int i = 0; i < 10000000; i++) {
+    double power;
+    int N;
+
+    printf("Choose the power of 10 for buffer size [7 | 8 | 9]: ");
+    scanf("%lf", &power);
+    N = pow(10.0, power);
+    printf("Buffer size = %d\n", N);
+
+    int buffer[N];
+    
+    time_t start_time = time(NULL);
+
+    for (int i = 0; i < N; i++) {
         int n = delta();
-        printf("N gerado: %d\n", n);
         printf("iteração: %d\n", i);
         buffer[i] = n;
     }
 
+    time_t end_time = time(NULL);
+    printf("Tempo para preencher o vetor: %lds\n", end_time - start_time);
+
+    start_time = time(NULL);
     int counter = 0;
-    for (int i = 0; i < 10000000; i++) {
+    for (int i = 0; i < N; i++) {
         counter += buffer[i];
     }
+    end_time = time(NULL);
 
+    printf("Tempo para somar o vetor: %lds\n", end_time - start_time);
     printf("%d\n", counter);
 }
