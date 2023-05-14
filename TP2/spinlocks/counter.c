@@ -7,45 +7,69 @@
 #include <pthread.h>
 
 
-int buffer[100000000];
-int N = 100000000;
-int K = 16;
+// Definição de variáveis globais -> buffer, tamanho do buffer, número de threads,
+// contador compartilhado e a flag atômica que será usada como lock
+signed char buffer[100];
+int N = 100;
+int K = 4;
 int counter = 0;
 atomic_flag lock = ATOMIC_FLAG_INIT;
 
-int delta(int i) {
+
+// Função geradora de número aleatório
+signed char delta(int i) {
     // Definir a seed baseada no tempo
     srand(time(NULL) * i);
 
     // Gerar número entre -100 e 100
-    int number = rand() % 201 - 100;
+    signed char number = rand() % 201 - 100;
     return number;
 }
 
+// Função para preencher o buffer
 void fill_buffer() {
     for (int i = 0; i < N; i++) {
-        int n = delta(i);
+        signed char n = delta(i);
         printf("iteração: %d\n", i);
         buffer[i] = n;
     }
 }
 
+// Função para entrar na região crítica
 void acquire(atomic_flag *flag) {
     while(atomic_flag_test_and_set(flag));
 }
 
+// Função para sair da região crítica
 void release(atomic_flag *flag) {
     atomic_flag_clear(flag);
 }
 
+// Função que as threads irão rodar
 void *thread_sum(void *arg) {
+    // É passado como argumento o número da thread para saber qual parcela da soma ela será responsável
     int thread_num = *(int*) arg;
-    int size = N / K;
-    int th_counter = 0;
-    for (int i = 0; i < size; i++) {
-        th_counter += buffer[i + thread_num * size];
+    
+    // Calculamos o tamanho da sua parcela
+    int fraction = N / K;
+
+    // As parcelas podem ficar desiguais em algumas combinações de N e K
+    // Caso seja a última thread criada, o resto da divisão será adicionado 
+    // a quantidade de números que devem ser somados
+    int remainder = 0;
+    if (thread_num == K - 1) {
+        remainder += N % K;
     }
 
+    int size = fraction + remainder;
+    // Teremos um contador local da thread para somar os números de sua parcela
+    int th_counter = 0;
+    for (int i = 0; i < size; i++) {
+        th_counter += buffer[i + thread_num * fraction];
+    }
+
+    // Região crítica da função: onde acessamos o contador principal e adicionamos
+    // o valor da parcela da thread
     acquire(&lock);
     counter += th_counter;
     release(&lock);
@@ -56,14 +80,16 @@ void *thread_sum(void *arg) {
 
 
 int main(int argc, char **argv) {
+    // Vetor de threads
     pthread_t threads[K];
+    // Variáveis para calcular o tempo da soma utilizando threads
+    clock_t start_threads, stop_threads;
 
     fill_buffer();
 
-    clock_t start_threads, stop_threads;
-
     start_threads = clock();
 
+    // Criação das threads
     for (int i = 0; i < K; i++) {
         int *thread_num = malloc(sizeof(int));
         *thread_num = i;
@@ -72,6 +98,7 @@ int main(int argc, char **argv) {
         }
     }
 
+    // Espera até que todas as threads retornem de suas execuções
     for (int i = 0; i < K; i++) {
         if (pthread_join(threads[i], NULL) != 0) {
             printf("Cannot wait for thread %d\n", i);
@@ -80,6 +107,8 @@ int main(int argc, char **argv) {
 
     stop_threads = clock();
 
+    // Verificação na thread principal para checar se valor calculado no contador 
+    // utilizando threads confere
     int main_counter = 0;
     for (int i = 0; i < N; i++) {
         main_counter += buffer[i];
@@ -90,8 +119,9 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // Resultados printados no terminal
     printf("Main -> %d\n", main_counter);
     printf("Threads -> %d\n", counter);
 
-    printf("Time calculate by threads: %.5f\n", ((double) (stop_threads - start_threads) / CLOCKS_PER_SEC));
+    printf("Time calculate by threads: %.5fs\n", ((double) (stop_threads - start_threads) / CLOCKS_PER_SEC));
 }
