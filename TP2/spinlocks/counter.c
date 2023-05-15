@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
+#include <sys/time.h>
 #include <unistd.h>
 #include <math.h>
 #include <stdatomic.h>
@@ -9,9 +9,9 @@
 
 // Definição de variáveis globais -> buffer, tamanho do buffer, número de threads,
 // contador compartilhado e a flag atômica que será usada como lock
-signed char buffer[100];
-int N = 100;
-int K = 4;
+const int N = 1000000000;
+signed char buffer[N];
+int K;
 int counter = 0;
 atomic_flag lock = ATOMIC_FLAG_INIT;
 
@@ -30,7 +30,6 @@ signed char delta(int i) {
 void fill_buffer() {
     for (int i = 0; i < N; i++) {
         signed char n = delta(i);
-        printf("iteração: %d\n", i);
         buffer[i] = n;
     }
 }
@@ -80,14 +79,16 @@ void *thread_sum(void *arg) {
 
 
 int main(int argc, char **argv) {
+    K = atoi(argv[1]);
+
     // Vetor de threads
     pthread_t threads[K];
     // Variáveis para calcular o tempo da soma utilizando threads
-    clock_t start_threads, stop_threads;
+    struct timeval begin, end;
 
     fill_buffer();
 
-    start_threads = clock();
+    gettimeofday(&begin, 0);
 
     // Criação das threads
     for (int i = 0; i < K; i++) {
@@ -105,7 +106,10 @@ int main(int argc, char **argv) {
         }
     }
 
-    stop_threads = clock();
+    gettimeofday(&end, 0);
+    long seconds = end.tv_sec - begin.tv_sec;
+    long microseconds = end.tv_usec - begin.tv_usec;
+    double elapsed = seconds + microseconds*1e-6;
 
     // Verificação na thread principal para checar se valor calculado no contador 
     // utilizando threads confere
@@ -119,9 +123,5 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // Resultados printados no terminal
-    printf("Main -> %d\n", main_counter);
-    printf("Threads -> %d\n", counter);
-
-    printf("Time calculate by threads: %.5fs\n", ((double) (stop_threads - start_threads) / CLOCKS_PER_SEC));
+    printf("%.5f\n", elapsed);
 }

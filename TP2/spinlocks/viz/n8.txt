@@ -1,0 +1,108 @@
+Running for 1 threads
+0.08953
+0.08939
+0.08943
+0.08788
+0.09071
+0.08994
+0.09016
+0.09319
+0.09413
+0.09185
+Changing number of threads...
+Running for 2 threads
+0.04908
+0.04852
+0.04775
+0.04848
+0.04742
+0.04754
+0.04816
+0.04770
+0.05058
+0.04726
+Changing number of threads...
+Running for 4 threads
+0.02509
+0.02454
+0.02433
+0.02461
+0.02453
+0.02470
+0.02560
+0.02516
+0.02435
+0.02486
+Changing number of threads...
+Running for 8 threads
+0.01262
+0.01310
+0.01310
+0.01293
+0.01284
+0.01328
+0.01296
+0.01310
+0.01332
+0.01296
+Changing number of threads...
+Running for 16 threads
+0.01250
+0.01269
+0.01262
+0.01234
+0.01268
+0.01193
+0.01241
+0.01242
+0.01230
+0.01261
+Changing number of threads...
+Running for 32 threads
+0.01212
+0.01223
+0.01241
+0.01248
+0.01283
+0.01215
+0.01258
+0.01208
+0.01253
+0.01243
+Changing number of threads...
+Running for 64 threads
+0.01161
+0.01180
+0.01163
+0.01163
+0.01156
+0.01131
+0.01151
+0.01167
+0.01192
+0.01166
+Changing number of threads...
+Running for 128 threads
+0.01155
+0.01190
+0.01161
+0.01142
+0.01203
+0.01163
+0.01174
+0.01173
+0.01161
+0.01182
+Changing number of threads...
+Running for 256 threads
+0.01212
+0.01164
+0.01201
+0.01207
+0.01221
+0.01200
+0.01214
+0.01215
+0.01168
+0.01207
+Changing number of threads...

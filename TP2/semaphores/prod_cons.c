@@ -10,7 +10,7 @@
 // Declaração de variáveis globais
 // Semáforos usados, vetor, posição, itens consumidos e limite de itens
 sem_t *mutex, *empty, *full;
-const int N = 1000;
+const int N = 100;
 int buffer[N];
 int position = 0;
 int items_consumed = 0;
@@ -79,6 +79,12 @@ void *consume(void *arg) {
         // Número produzido é lido do vetor, final do vetor é decrementado 
         // e o número de itens consumidos é incrementado 
         int number = buffer[position - 1];
+
+        // Código para geração de gráficos da ocupação do vetor
+        // FILE *f = fopen("ocupacao.csv", "a");
+        // fprintf(f, "%d,%d\n", items_consumed, position);
+        // fclose(f);
+        
         position--;
         items_consumed++;
 
@@ -88,7 +94,7 @@ void *consume(void *arg) {
         
         // Número lido é processado (consumido)
         if (is_prime(number)) {
-            // printf("Prime number %d consumed!\n", number);
+            printf("Prime number %d consumed!\n", number);
         }
     }
 
