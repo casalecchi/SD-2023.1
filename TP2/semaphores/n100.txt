@@ -1,0 +1,84 @@
+Running for 1 producers and 1 consumers
+Time taken: 38.28778s
+Time taken: 36.99677s
+Time taken: 37.58790s
+Time taken: 37.92871s
+Time taken: 37.51602s
+Time taken: 37.56627s
+Time taken: 36.78236s
+Time taken: 37.68625s
+Time taken: 36.76942s
+Time taken: 37.90782s
+Changing number of producers and consumers...
+Running for 1 producers and 2 consumers
+Time taken: 19.07995s
+Time taken: 19.26441s
+Time taken: 18.79753s
+Time taken: 19.33635s
+Time taken: 19.07824s
+Time taken: 19.09818s
+Time taken: 18.98941s
+Time taken: 19.34792s
+Time taken: 19.26483s
+Time taken: 19.44743s
+Changing number of producers and consumers...
+Running for 1 producers and 4 consumers
+Time taken: 9.99855s
+Time taken: 9.87395s
+Time taken: 10.15245s
+Time taken: 10.11959s
+Time taken: 10.00755s
+Time taken: 10.09911s
+Time taken: 10.06237s
+Time taken: 9.73034s
+Time taken: 9.85904s
+Time taken: 9.97246s
+Changing number of producers and consumers...
+Running for 1 producers and 8 consumers
+Time taken: 5.07426s
+Time taken: 5.10049s
+Time taken: 5.09824s
+Time taken: 4.98561s
+Time taken: 5.17929s
+Time taken: 5.11620s
+Time taken: 5.03981s
+Time taken: 5.12116s
+Time taken: 5.00823s
+Time taken: 5.13792s
+Changing number of producers and consumers...
+Running for 2 producers and 1 consumers
+Time taken: 39.53169s
+Time taken: 37.90718s
+Time taken: 37.96167s
+Time taken: 36.13954s
+Time taken: 37.00241s
+Time taken: 36.69539s
+Time taken: 36.57748s
+Time taken: 36.55866s
+Time taken: 36.66518s
+Time taken: 37.45509s
+Changing number of producers and consumers...
+Running for 4 producers and 1 consumers
+Time taken: 37.41766s
+Time taken: 37.05709s
+Time taken: 37.84238s
+Time taken: 36.61957s
+Time taken: 37.36587s
+Time taken: 36.83718s
+Time taken: 36.97936s
+Time taken: 38.59569s
+Time taken: 37.04300s
+Time taken: 36.60621s
+Changing number of producers and consumers...
+Running for 8 producers and 1 consumers
+Time taken: 36.29377s
+Time taken: 35.78241s
+Time taken: 31.76971s
+Time taken: 35.82926s
+Time taken: 37.11844s
+Time taken: 35.45136s
+Time taken: 37.56661s
+Time taken: 35.46015s
+Time taken: 35.73696s
+Time taken: 36.98280s
+Changing number of producers and consumers...
