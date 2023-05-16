@@ -5,12 +5,13 @@
 #include <stdbool.h>
 #include <semaphore.h>
 #include <sys/time.h>
+#include <math.h>
 
 
 // Declaração de variáveis globais
 // Semáforos usados, vetor, posição, itens consumidos e limite de itens
 sem_t *mutex, *empty, *full;
-const int N = 100;
+const int N = 10;
 int buffer[N];
 int position = 0;
 int items_consumed = 0;
