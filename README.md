@@ -75,3 +75,36 @@ Depois é a vez de executar o `client` passando o número de iterações que o p
 ```shell
 ./client 100
 ```
+
+## Trabalho Prático 2 - TP2
+
+* Somador com spinlocks
+* Produtor Consumidor com semáforos
+
+### Guia de uso - Somador
+
+Seguindo os padrões anteriores no TP1, devemos compilar o código dessa maneira: 
+
+```shell
+gcc counter.c -o counter
+```
+
+O tamanho do vetor N está fixado em $10^9$, mas é possível mudá-lo no próprio código (lembra-se de fazer isso antes de compilá-lo). Já o número de threads que serão utilizadas para realizar a soma, o parâmetro $K$ é fornecido como argumento na linha de comando. Um exemplo do uso do programa com $K = 64$ threads é mostrado abaixo.
+
+```shell
+./counter 64
+```
+
+### Guia de uso - Produtor Consumidor
+
+Primeiro é feita a compilação:
+
+```shell
+gcc prod_cons.c -o prod_cons
+```
+
+O tamanho do vetor N aqui é feito da mesma maneira que no programa somador. Este valor está fixado em 1000. Em seguida, teremos que passar dois parâmetros via linha de comando. Serão dois inteiros que indicam as quantidades de threads produtoras e consumidoras, respectivamente. É mostrado o caso onde rodamos o programa para 1 thread produtora e 8 threads consumidoras. 
+
+```shell
+./prod_cons 1 8
+```

@@ -11,7 +11,7 @@
 // Declaração de variáveis globais
 // Semáforos usados, vetor, posição, itens consumidos e limite de itens
 sem_t *mutex, *empty, *full;
-const int N = 10;
+const int N = 1000;
 int buffer[N];
 int position = 0;
 int items_consumed = 0;
