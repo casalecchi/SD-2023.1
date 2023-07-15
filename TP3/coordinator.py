@@ -15,7 +15,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Vincule o socket a um endereço e porta
 server_address = ("localhost", 8001)
 sock.bind(server_address)
-sock.listen(100)
+sock.listen(128)
 print("Socket criado")
 
 def terminal_interface():
@@ -40,13 +40,6 @@ def receive_requests():
         print("Esperando cliente...")
         client, _ = sock.accept()
         print("Cliente aceito...")
-        data = client.recv(10)
-        print(f"Dado recebido: {data}")
-
-        # Processar o pedido recebido
-        semaphore.acquire()
-        request_queue.put(data.decode())
-        semaphore.release()
 
         # Registrar o pedido no arquivo de log
         # log_message = create_log_message(data.decode(), address)
@@ -57,26 +50,37 @@ def receive_requests():
 
 
 def process_request(client):
-    print("Chegou mensagem")
-    semaphore.acquire()
-    request = request_queue.get()
-    semaphore.release()
+    while True:
+        data = client.recv(10)
+        print(f"Dado recebido: {data}")
 
-    # Extrair informações do pedido (identificador da mensagem, identificador do processo)
-    message_type, process_id, _ = request.split("|")
+        # Tratar data pra quando acabar as iterações !!!!!!!!
 
-    # Tomar decisões com base no pedido recebido (conceder acesso, atualizar estatísticas, etc.)
-    if message_type == '1':
-        grant_message = create_grant_message(process_id, 10)
-        client.send(grant_message.encode())
-        print(f"Mensagem de permissão enviada a {process_id}")
+        # Processar o pedido recebido
+        semaphore.acquire()
+        request_queue.put(data.decode())
+        semaphore.release()
 
-    msg = client.recv(10)
-    print(msg)
-    release, pid, _ = msg.decode().split("|")
+        print("Chegou mensagem")
+        semaphore.acquire()
+        request = request_queue.get()
+        
+        # Extrair informações do pedido (identificador da mensagem, identificador do processo)
+        message_type, process_id, _ = request.split("|")
 
-    if release == '3':
-        print(f"Mensagem de liberação de RC recebida {pid}")
+        # Tomar decisões com base no pedido recebido (conceder acesso, atualizar estatísticas, etc.)
+        if message_type == '1':
+            grant_message = create_grant_message(process_id, 10)
+            client.send(grant_message.encode())
+            print(f"Mensagem de permissão enviada a {process_id}")
+
+        msg = client.recv(10)
+        print(msg)
+        release, pid, _ = msg.decode().split("|")
+
+        if release == '3':
+            semaphore.release()
+            print(f"Mensagem de liberação de RC recebida {pid}")
 
 
 terminal_thread = threading.Thread(target=terminal_interface)

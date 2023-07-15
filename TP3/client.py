@@ -7,10 +7,10 @@ def client_process(coordinator_address, coordinator_port, k, r, process_id):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
 
     # conectar ao coordenador
+    sock.connect((coordinator_address, coordinator_port))
     
 
     for i in range(r):
-        sock.connect((coordinator_address, coordinator_port))
         # Envie uma mensagem de solicitação ao coordenador
         request_message = create_request_message(process_id, 10)
         sock.send(request_message.encode())
