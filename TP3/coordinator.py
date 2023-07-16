@@ -13,7 +13,7 @@ access_stats = {}
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Vincule o socket a um endereço e porta
-server_address = ("localhost", 8001)
+server_address = ("localhost", 8000)
 sock.bind(server_address)
 sock.listen(128)
 print("Socket criado")
@@ -51,18 +51,24 @@ def receive_requests():
 
 def process_request(client):
     while True:
-        data = client.recv(10)
+        print("Chegou mensagem")
+
+        data = client.recv(MESSAGE_SIZE)
         print(f"Dado recebido: {data}")
 
-        # Tratar data pra quando acabar as iterações !!!!!!!!
+        # Tratamento para quando as iterações acabam
+        decoded_data = data.decode()
+        if decoded_data == "":
+            break
 
         # Processar o pedido recebido
         semaphore.acquire()
-        request_queue.put(data.decode())
+        request_queue.put(decoded_data)
         semaphore.release()
 
-        print("Chegou mensagem")
+        
         semaphore.acquire()
+        print(request_queue.queue)
         request = request_queue.get()
         
         # Extrair informações do pedido (identificador da mensagem, identificador do processo)
@@ -70,21 +76,22 @@ def process_request(client):
 
         # Tomar decisões com base no pedido recebido (conceder acesso, atualizar estatísticas, etc.)
         if message_type == '1':
-            grant_message = create_grant_message(process_id, 10)
+            grant_message = create_grant_message(process_id, MESSAGE_SIZE)
             client.send(grant_message.encode())
             print(f"Mensagem de permissão enviada a {process_id}")
 
-        msg = client.recv(10)
-        print(msg)
-        release, pid, _ = msg.decode().split("|")
+        release_message = client.recv(MESSAGE_SIZE)
+        print(release_message)
+        release, pid, _ = release_message.decode().split("|")
 
         if release == '3':
             semaphore.release()
             print(f"Mensagem de liberação de RC recebida {pid}")
 
 
-terminal_thread = threading.Thread(target=terminal_interface)
-receive_thread = threading.Thread(target=receive_requests)
+if __name__ == "__main__":
+    terminal_thread = threading.Thread(target=terminal_interface)
+    receive_thread = threading.Thread(target=receive_requests)
 
-terminal_thread.start()
-receive_thread.start()
+    terminal_thread.start()
+    receive_thread.start()

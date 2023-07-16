@@ -1,9 +1,11 @@
 import socket
-import time
+from time import sleep
+from datetime import datetime
 import os
+import sys
 from messages import *
 
-def client_process(coordinator_address, coordinator_port, k, r, process_id):
+def client_process(coordinator_address, coordinator_port, r, k, process_id):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
 
     # conectar ao coordenador
@@ -27,11 +29,12 @@ def client_process(coordinator_address, coordinator_port, k, r, process_id):
         if message_type == '2':
             # Acesso concedido, execute as operações na região crítica
             with open("resultado.txt", "a") as file:
-                current_time = time.time()
+                current_time = datetime.now()
                 file.write(f"{process_id} - {current_time}\n")
 
-        # Aguarde k segundos antes de fazer a próxima solicitação
-        time.sleep(k)
+            # Aguarde k segundos antes de fazer a próxima solicitação
+            sleep(k)
+        
 
         # Se conecta novamente, para mandar outra mensagem
         release_message = create_release_message(process_id, 10)
@@ -42,4 +45,7 @@ def client_process(coordinator_address, coordinator_port, k, r, process_id):
     # Encerre o socket
     sock.close()
 
-client_process("localhost", 8001, 2, 5, os.getpid())
+if __name__ == "__main__":
+    inputs = sys.argv
+    r, k = map(lambda x: int(x), inputs[1:])
+    client_process("localhost", 8000, 3, 0, os.getpid())
