@@ -3,7 +3,7 @@ import subprocess
 
 def str_to_int(num, default):
     if num.isnumeric():
-        return int(n)
+        return int(num)
     else:
         return default
 
@@ -17,6 +17,8 @@ r = str_to_int(r, 10)
 k = input("Wait time [2]: ")
 k = str_to_int(k, 2)
 
-for i in range(128):
+print(f"n={n} | r={r} | k= {k}")
+
+for i in range(n):
     subprocess.Popen(["python3", "client.py", f"{r}", f"{k}"])
 
