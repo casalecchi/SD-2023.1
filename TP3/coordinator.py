@@ -10,16 +10,14 @@ CLOSE_SOCKET = False
 COORD_ADDR = ("localhost", 8000)
 
 queue_sem = threading.Semaphore(1)
-critic_sem = threading.Semaphore(1)
+critical_sem = threading.Semaphore(1)
+log_sem = threading.Semaphore(1)
 
 request_queue = Queue()
 access_stats = {}
 counter = 0
 
-filename = 'coordinator_log.txt'
-
-with open(filename, 'w') as file:
-    pass
+logname = 'log.txt'
 
 def terminal_interface():
     while True:
@@ -49,7 +47,24 @@ def receive_requests():
         print("Esperando pedido...")    
         client, addr = sock.accept()
         data = client.recv(MESSAGE_SIZE)
+        current_time = str(datetime.now())
         decoded = data.decode()
+
+        message_type, process_id, _ = decoded.split("|")
+        log_message = ""
+
+        if message_type == "1":
+            log_message += "[R] Request"
+        elif message_type == "3":
+            log_message += "[R] Release"
+        
+        log_message += f" - {process_id} - {current_time[11:19]}\n"
+
+        log_sem.acquire()
+        with open(logname, "a") as file:
+            file.write(log_message)
+        log_sem.release()
+            
         print("Pedido aceito")
 
         if decoded == "":
@@ -77,28 +92,26 @@ def process_request(client):
 
     # Take actions based on the received request (grant access, update statistics, etc.)
     if message_type == '1':
-        critic_sem.acquire()
-        with open("coordinator_log.txt", "a") as file:
-            current_time = str(datetime.now())
-            file.write(f"Instante de chegada da mensagem: {current_time[11:19]} ; Tipo da mensagem:{message_type} \
-                         Processo de Origem {process_id} ; Processo Destino {os.getpid()} - \n")
+        critical_sem.acquire()
         grant_message = create_grant_message(process_id, MESSAGE_SIZE)
         encoded_grant = grant_message.encode()
         client.send(encoded_grant)
-        with open("coordinator_log.txt", "a") as file:
-            current_time = str(datetime.now())
-            file.write(f"Instante do envio da mensagem: {current_time[11:19]} ; Tipo da mensagem: 2 \
-                         Processo de Origem {os.getpid()} ; Processo Destino {process_id} - \n")
+        current_time = str(datetime.now())
+
+        log_message = f"[S] Grant - {process_id} - {current_time[11:19]}\n"
+
+        log_sem.acquire()
+        with open(logname, "a") as file:
+            file.write(log_message)
+        log_sem.release()
+
         print(f"Mensagem de permissão enviada a {process_id}")
 
     if message_type == '3':
         counter += 1
         access_stats[process_id] = access_stats.get(process_id, 0) + 1
-        with open("coordinator_log.txt", "a") as file:
-            current_time = str(datetime.now())
-            file.write(f"Instante de chegada da mensagem: {current_time[11:19]} ; Tipo da mensagem:{message_type} \
-                         Processo de Origem {process_id} ; Processo Destino {os.getpid()} - \n")
-        critic_sem.release()
+        critical_sem.release()
+        
         print(f"Mensagem de liberação de RC recebida {process_id}")
 
 
