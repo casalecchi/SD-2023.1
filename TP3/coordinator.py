@@ -92,16 +92,16 @@ def process_request(client: socket):
         critical_sem.acquire()
 
         log_sem.acquire()
-        write_to_log(data, log_sem, log_file)
+        write_to_log(data, log_file)
         log_sem.release()
         
         client.send(data)
 
     # process the RELEASE message
     if message_type == 3:
-        
+
         log_sem.acquire()
-        write_to_log(message, log_sem, log_file)
+        write_to_log(message, log_file)
         log_sem.release()
 
         # compute statistics
