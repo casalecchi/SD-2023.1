@@ -1,3 +1,4 @@
+from threading import Semaphore
 from datetime import datetime
 from typing import Tuple
 
@@ -48,3 +49,10 @@ def create_log_message(data: bytes) -> str:
     
     log_message += f" - {pid} - {current_time[11:19]}\n"
     return log_message
+
+
+def write_to_log(data: bytes, log_file: str):
+    """Write a message based on data passedon log"""
+    log_message = create_log_message(data)
+    with open(log_file, "a") as file:
+        file.write(log_message)
