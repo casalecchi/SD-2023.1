@@ -48,30 +48,20 @@ def receive_requests():
         # Waiting for a message
         client, addr = sock.accept()
         data = client.recv(MESSAGE_SIZE)
-        decoded = data.decode()
-        current_time = str(datetime.now())
-
-        message_type, process_id, _ = decoded.split("|")
-        log_message = ""
-
-        if message_type == "1":
-            log_message += "[R] Request"
-        elif message_type == "3":
-            log_message += "[R] Release"
         
-        log_message += f" - {process_id} - {current_time[11:19]}\n"
-
+        log_message = create_log_message(data)
         log_sem.acquire()
         with open(logname, "a") as file:
             file.write(log_message)
         log_sem.release()
 
-        if decoded == "":
+        if data == b"":
+            print(" ISSO RODA ??????")
             client.close()
             break 
         
         queue_sem.acquire()
-        request_queue.put(decoded)
+        request_queue.put(data)
         queue_sem.release()
 
         process_thread = threading.Thread(target=process_request, args=(client,))
@@ -87,27 +77,24 @@ def process_request(client):
     request = request_queue.get()
     queue_sem.release()
 
-    # Extract information from the request (message type, process ID)
-    message_type, process_id, _ = request.split("|")
+    message_type, pid = decode_message(request)
 
     # Take actions based on the received request (grant access, update statistics, etc.)
-    if message_type == '1':
+    if message_type == 1:
         critical_sem.acquire()
-        grant_message = create_grant_message(process_id, MESSAGE_SIZE)
-        encoded_grant = grant_message.encode()
-        client.send(encoded_grant)
-        current_time = str(datetime.now())
+        grant_message = create_grant_message(pid, MESSAGE_SIZE)
+        data = grant_message.encode()
+        client.send(data)
 
-        log_message = f"[S] Grant - {process_id} - {current_time[11:19]}\n"
-
+        log_message = create_log_message(data)
         log_sem.acquire()
         with open(logname, "a") as file:
             file.write(log_message)
         log_sem.release()
 
-    if message_type == '3':
+    if message_type == 3:
         counter += 1
-        access_stats[process_id] = access_stats.get(process_id, 0) + 1
+        access_stats[pid] = access_stats.get(pid, 0) + 1
         critical_sem.release()
 
 

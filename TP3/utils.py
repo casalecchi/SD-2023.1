@@ -30,7 +30,7 @@ def decode_message(data: bytes) -> Tuple[int, int]:
     """Returns (type, pid) given a message received"""
     decoded = data.decode()
     message_type, pid, _ = decoded.split('|')
-    return message_type, pid
+    return int(message_type), int(pid)
 
 
 def create_log_message(data: bytes) -> str:
@@ -41,7 +41,10 @@ def create_log_message(data: bytes) -> str:
     log_message = ""
     if message_type == 1:
         log_message += "[R] Request"
+    elif message_type == 2:
+        log_message += "[S] Grant"
     elif message_type == 3:
         log_message += "[R] Release"
     
     log_message += f" - {pid} - {current_time[11:19]}\n"
+    return log_message
