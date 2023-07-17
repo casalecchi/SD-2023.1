@@ -43,7 +43,7 @@ def terminal_interface():
 
 # thread to receive messages and create other threads to process them
 def receive_messages():
-    global close_socket
+    global close_socket, queue_sem
 
     # create socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -69,21 +69,17 @@ def receive_messages():
 
 # thread to process messages
 def process_request(client: socket):
+    global log_sem, queue_sem, critical_sem
 
     # read the next message on queue
     queue_sem.acquire()
-    message = messages_queue.pop()
+    message = messages_queue.popleft()
     queue_sem.release()
 
     message_type, pid = decode_message(message)
 
     # process the REQUEST message
     if message_type == 1:
-        # write the request message
-        log_sem.acquire()
-        write_to_log(message, log_file)
-        log_sem.release()
-
         # create the permission message
         grant_message = create_grant_message(pid, MESSAGE_SIZE)
         data = grant_message.encode()
@@ -92,6 +88,10 @@ def process_request(client: socket):
         critical_sem.acquire()
 
         log_sem.acquire()
+        # request
+        write_to_log(message, log_file)
+
+        # grant
         write_to_log(data, log_file)
         log_sem.release()
         
