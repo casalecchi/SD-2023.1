@@ -1,22 +1,14 @@
 import sys
 from datetime import datetime
 
-def populate_expected_counts():
+def verify_write_counts():
     expected_counts = {}
+    process_counts = {}
     with open("resultado.txt", 'r') as file:
         for line in file:
             process_info, _ = line.strip().split(" - ")
             process_id = process_info.split()[0]
             expected_counts[process_id] = expected_counts.get(process_id, 0) + 1
-    return expected_counts
-
-expected_counts = populate_expected_counts()
-
-def verify_write_counts(expected_counts):
-    process_counts = {}
-    with open("resultado.txt", 'r') as file:
-        for line in file:
-            process_id, timestamp = line.strip().split(" - ")
             process_counts[process_id] = process_counts.get(process_id, 0) + 1
     for process_id, expected_count in expected_counts.items():
         actual_count = process_counts.get(process_id, 0)
@@ -37,14 +29,12 @@ def validate_result(n, r):
         timestamp_str = timestamp_raw[11:] # Remove year, month and date
         timestamp = datetime.strptime(timestamp_str, '%H:%M:%S.%f')
         if previous_timestamp is not None and timestamp <= previous_timestamp:
-            print(previous_timestamp)
-            print(timestamp)
             sys.exit("Wrong Timestamp")
         previous_timestamp = timestamp
     print("Correct Timestamps")
-    if verify_write_counts(expected_counts):
+    if verify_write_counts():
         print("Each process wrote the expected number of times")
     else:
         sys.exit("Wrong count of process writes")
 
-validate_result(128, 3)
+validate_result(32, 10)
