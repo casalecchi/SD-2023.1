@@ -20,5 +20,4 @@ k = str_to_int(k, 2)
 print(f"n={n} | r={r} | k= {k}")
 
 for i in range(n):
-    subprocess.Popen(["python3", "client.py", f"{r}", f"{k}"])
-
+    subprocess.Popen(["python", "client.py", f"{r}", f"{k}"])
