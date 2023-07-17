@@ -3,7 +3,7 @@ from time import sleep
 from datetime import datetime
 import os
 import sys
-from messages import *
+from utils import *
 
 
 COORD_ADDR = ("localhost", 8000)
