@@ -35,6 +35,7 @@ def terminal_interface():
             print("Comando inválido")
 
 
+
 # Receber pedidos, colocar na fila e criar threads de processamento
 def receive_requests():
     global CLOSE_SOCKET
