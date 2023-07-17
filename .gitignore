@@ -1,3 +1,5 @@
 .vscode
 .DS_Store
+log.txt
+resultado.txt
 __pycache__
