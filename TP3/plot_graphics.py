@@ -25,15 +25,15 @@ def calculate_timestamp_difference(log_file_path):
 
 # Define the data
 data = {
-    'Option': ['Option 1', 'Option 1', 'Option 1', 'Option 1', 'Option 1', 'Option 2', \
-                'Option 2', 'Option 2', 'Option 2', 'Option 2', 'Option 2', 'Option 3', \
-                'Option 3', 'Option 3', 'Option 3', 'Option 3', 'Option 3', 'Option 3'],
-    'N': [2, 4, 8, 16, 32, 2, 4, 8, 16, 32, 64, 2, 4, 8, 16, 32, 64, 128],
-    'Time': [timedelta(seconds=38.291190), timedelta(seconds=78.836230), timedelta(seconds=160.926631), \
-            timedelta(seconds=320.516054), timedelta(seconds=642.502914), timedelta(seconds=9.076002), \
-            timedelta(seconds=19.240000), timedelta(seconds=39.599009), timedelta(seconds=80.543530), \
-            timedelta(seconds=161.813102), timedelta(seconds=325.012244), timedelta(seconds=0.223998), \
-            timedelta(seconds=0.883001), timedelta(seconds=1.623001), timedelta(seconds=3.437002), \
+    'Option': ['Option 1', 'Option 1', 'Option 1', 'Option 1', 'Option 1', \
+               'Option 2', 'Option 2', 'Option 2', 'Option 2', 'Option 2', 'Option 2', \
+               'Option 3', 'Option 3', 'Option 3', 'Option 3', 'Option 3', 'Option 3', 'Option 3'],
+    'N': [2, 4, 8, 16, 32, \
+          2, 4, 8, 16, 32, 64, \
+          2, 4, 8, 16, 32, 64, 128],
+    'Time': [timedelta(seconds=38.291190), timedelta(seconds=78.836230), timedelta(seconds=160.926631), timedelta(seconds=320.516054), timedelta(seconds=642.502914), \
+            timedelta(seconds=9.076002), timedelta(seconds=19.240000), timedelta(seconds=39.599009), timedelta(seconds=80.543530), timedelta(seconds=161.813102), timedelta(seconds=325.012244), \
+            timedelta(seconds=0.223998), timedelta(seconds=0.883001), timedelta(seconds=1.623001), timedelta(seconds=3.437002), \
             timedelta(seconds=11.782217), timedelta(seconds=23.071997), timedelta(seconds=44.135283)]
 }
 
