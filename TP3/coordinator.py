@@ -45,11 +45,11 @@ def receive_requests():
     sock.listen(socket.SOMAXCONN)
 
     while not CLOSE_SOCKET:
-        print("Esperando pedido...")    
+        # Waiting for a message
         client, addr = sock.accept()
         data = client.recv(MESSAGE_SIZE)
-        current_time = str(datetime.now())
         decoded = data.decode()
+        current_time = str(datetime.now())
 
         message_type, process_id, _ = decoded.split("|")
         log_message = ""
@@ -65,10 +65,9 @@ def receive_requests():
         with open(logname, "a") as file:
             file.write(log_message)
         log_sem.release()
-            
-        print("Pedido aceito")
 
         if decoded == "":
+            client.close()
             break 
         
         queue_sem.acquire()
@@ -83,8 +82,8 @@ def receive_requests():
 
 def process_request(client):
     global counter
+
     queue_sem.acquire()
-    print(request_queue.queue)
     request = request_queue.get()
     queue_sem.release()
 
@@ -106,14 +105,10 @@ def process_request(client):
             file.write(log_message)
         log_sem.release()
 
-        print(f"Mensagem de permissão enviada a {process_id}")
-
     if message_type == '3':
         counter += 1
         access_stats[process_id] = access_stats.get(process_id, 0) + 1
         critical_sem.release()
-        
-        print(f"Mensagem de liberação de RC recebida {process_id}")
 
 
 
