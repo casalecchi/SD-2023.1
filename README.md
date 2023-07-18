@@ -108,3 +108,34 @@ O tamanho do vetor N aqui é feito da mesma maneira que no programa somador. Est
 ```shell
 ./prod_cons 1 8
 ```
+
+## Trabalho Prático 3 - TP3
+
+* Algoritmo centralizado de exclusão mútua
+distribuída
+
+### Guia de uso - Coordenador
+
+> python ./coordinator.py
+
+O comando acima, na linha de comando, executará o programa coordinator.py, este programa tem como intuito atuar como o coordenador do algoritmo centralizado de exclusão mútua distribuída. É necessário manter o terminal dele aberto e pode-se executar os seguintes comandos: "queue" para imprimir a fila atual de pedidos, "stats" para imprimir as estatisticas de execução (quantas vezes um processo foi atendido) e "end" para encerrar o programa
+
+### Guia de uso - Execute, Main e Client
+
+Neste momento o usuário pode decidir como executar a parte do cliente, caso ele queira especificar os parâmetros por conta própria, ele deve executar:
+
+> python ./main.py n r k
+
+Onde n = número de processos que executarão o script do cliente, r = número de vezes que cada processo escreverá no arquivo texto e k = tempo que o cliente ficará dormindo após a escrita no arquivo texto.
+
+Caso ele queira executar alguns casos de escalabilidade, é possível executar:
+ 
+> python ./execute.py
+
+Este script executará três testes de escalabilidade, sendo eles:
+
+* ST_1 = Scalability Test 1 onde n ∈ {2, 4, 8, 16, 32} ; r = 10 ; k = 2
+* ST_2 = Scalability Test 2 onde n ∈ {2, 4, 8, 16, 32, 64} ; r = 5 ; k = 1
+* ST_3 = Scalability Test 3 onde n ∈ {2, 4, 8, 16, 32, 64, 128} ; r = 3 ; k = 0
+
+Ele tem como output três CSVs com o tempo de execução de cada teste de escalabilidade bem como imprimir na tela validações se as execuções estavam condizentes com o esperado.
