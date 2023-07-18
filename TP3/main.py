@@ -1,5 +1,5 @@
 import subprocess
-
+import sys
 
 def str_to_int(num, default):
     if num.isnumeric():
@@ -7,14 +7,14 @@ def str_to_int(num, default):
     else:
         return default
 
-# Get inputs fromthe user
-n = input("Number of processes [2]: ")
-n = str_to_int(n, 2)
+# Get inputs from the user
+n = sys.argv[1]
+n = str_to_int(n, 10)
 
-r = input("Repetition for each process [10]: ")
+r = sys.argv[2]
 r = str_to_int(r, 10)
 
-k = input("Wait time [2]: ")
+k = sys.argv[3]
 k = str_to_int(k, 2)
 
 print(f"n={n} | r={r} | k= {k}")

@@ -1,6 +1,27 @@
 import sys
 from datetime import datetime
 
+# CALCULATES THE DIFFERENCE BETWEEN THE FIRST LINE AND THE LAST LINE
+def calculate_timestamp_difference(log_file_path):
+    with open(log_file_path, 'r') as file:
+        first_timestamp = None
+        last_timestamp = None
+
+        for line in file:
+            timestamp_str = line.strip().split(" - ")[1]
+            timestamp = datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S.%f')
+
+            if first_timestamp is None:
+                first_timestamp = timestamp
+            last_timestamp = timestamp
+
+    if first_timestamp is not None and last_timestamp is not None:
+        time_difference = last_timestamp - first_timestamp
+        return time_difference
+
+    return None
+
+# VERIFY WHETER EXPECTED NUMBER OF WRITES IS CORRECT
 def verify_write_counts():
     expected_counts = {}
     process_counts = {}
@@ -16,6 +37,7 @@ def verify_write_counts():
             return False
     return True
 
+# CHECKING IF NUMBER OF LINES IS CORRECT, IF TIMESTAMPS ARE CORRECT AND IF WRITE COUNTS ARE CORRECT
 def validate_result(n, r):
     previous_timestamp = None
     f = open("resultado.txt", "r")
@@ -36,5 +58,3 @@ def validate_result(n, r):
         print("Each process wrote the expected number of times")
     else:
         sys.exit("Wrong count of process writes")
-
-validate_result(32, 10)
