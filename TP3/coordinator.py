@@ -3,7 +3,6 @@ import socket
 import threading
 from collections import deque
 from utils import *
-from queue import Queue
 
 
 # constants
@@ -43,7 +42,7 @@ def terminal_interface():
 
 # thread to receive messages and create other threads to process them
 def receive_messages():
-    global close_socket, queue_sem
+    global close_socket, queue_sem, log_sem
 
     # create socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -54,10 +53,15 @@ def receive_messages():
         # waiting for a connection
         client, _ = sock.accept()
         data = client.recv(MESSAGE_SIZE)
-        
-        # put message on queue
+
+        # put message on queue and write on log
         queue_sem.acquire()
+        log_sem.acquire()
+
+        write_to_log(data, log_file)
         messages_queue.append(data)
+        
+        log_sem.release()
         queue_sem.release()
 
         # create new thread to process new message
@@ -73,10 +77,10 @@ def process_request(client: socket):
 
     # read the next message on queue
     queue_sem.acquire()
-    message = messages_queue.popleft()
+    next_message = messages_queue.popleft()
     queue_sem.release()
 
-    message_type, pid = decode_message(message)
+    message_type, pid = decode_message(next_message)
 
     # process the REQUEST message
     if message_type == 1:
@@ -87,23 +91,15 @@ def process_request(client: socket):
         # enter critical section and send permission to client
         critical_sem.acquire()
 
+        # write grant permission on log
         log_sem.acquire()
-        # request
-        write_to_log(message, log_file)
-
-        # grant
         write_to_log(data, log_file)
         log_sem.release()
-        
+
         client.send(data)
 
     # process the RELEASE message
     if message_type == 3:
-
-        log_sem.acquire()
-        write_to_log(message, log_file)
-        log_sem.release()
-
         # compute statistics
         access_stats[pid] = access_stats.get(pid, 0) + 1
         # free critical section
