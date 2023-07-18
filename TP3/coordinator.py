@@ -3,7 +3,6 @@ import socket
 import threading
 from collections import deque
 from utils import *
-import time
 
 
 # constants
@@ -16,16 +15,16 @@ log_file = 'log.txt'
 # data structures 
 messages_queue = deque()
 access_stats = {}
-# semaphores
-queue_sem = threading.Semaphore(1)
-critical_sem = threading.Lock()
-log_sem = threading.Semaphore(1)
+# locks
+queue_lock = threading.Lock()
+critical_lock = threading.Lock()
+log_lock = threading.Lock()
 release_lock = threading.Lock()
 
 
 # terminal thread
 def terminal_interface():
-    global close_socket
+    global close_socket, messages_queue, access_stats
 
     while True:
         command = input("Command: ")
@@ -41,10 +40,9 @@ def terminal_interface():
             print("Invalid input")
 
 
-
 # thread to receive messages and create other threads to process them
 def receive_messages():
-    global close_socket, queue_sem, log_sem
+    global close_socket, queue_lock, log_lock, messages_queue
 
     # create socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -56,20 +54,24 @@ def receive_messages():
         client, _ = sock.accept()
         data = client.recv(MESSAGE_SIZE)
 
-        # put message on queue and write on log
-        queue_sem.acquire()
-        log_sem.acquire()
+        # acquire on queue and log lock
+        queue_lock.acquire()
+        log_lock.acquire()
         
+        # if message is release, set flag
+        # else, (message is request) then put on queue
+        # in both ways, write on log
         release_flag = False
         write_to_log(data, log_file)
-
-        if data.decode()[0] == "3":
+        
+        data_type, _ = decode_message(data)
+        if data_type == 3:
             release_flag = True
         else:
             messages_queue.append(data)
             
-        queue_sem.release()
-        log_sem.release()
+        queue_lock.release()
+        log_lock.release()
         
 
         # create new thread to process new message
@@ -81,38 +83,44 @@ def receive_messages():
 
 # thread to process messages
 def process_request(client: socket, release_flag: bool, release_message: bytes):
-    global log_sem, queue_sem, critical_sem
+    # Arguments passed: client socket, flag if message is a release and the message itself
 
+    global log_lock, queue_lock, critical_lock, messages_queue, access_stats
+
+    # release messages will be priority
+    # release section will have a lock to prevent two releases be in execute
+    # in unexpected order
     if release_flag:
         release_lock.acquire()
         _, pid = decode_message(release_message)
         # compute statistics
         access_stats[pid] = access_stats.get(pid, 0) + 1
         # free critical section
+        critical_lock.release()
         release_lock.release()
-        critical_sem.release()
         return
 
-    # read the next message on queue
-    critical_sem.acquire()
+    # the message sent was a request
+    critical_lock.acquire()
 
-    queue_sem.acquire()
+    # get the first message on queue
+    queue_lock.acquire()
     next_message = messages_queue.popleft()
-    queue_sem.release()
+    queue_lock.release()
 
-    message_type, pid = decode_message(next_message)
+    # get pid of message
+    _, pid = decode_message(next_message)
 
     # create the permission message
     grant_message = create_grant_message(pid, MESSAGE_SIZE)
     data = grant_message.encode()
 
-    # enter critical section and send permission to client
-
     # write grant permission on log
-    log_sem.acquire()
+    log_lock.acquire()
     write_to_log(data, log_file)
-    log_sem.release()
+    log_lock.release()
 
+    # finally, send the permission to client
     client.send(data)
 
 
