@@ -13,11 +13,13 @@ for num_of_processes in n:
     filename = 'resultado.txt'
     with open(filename, 'w') as file: # RESETTING RESULTADO.TXT FILE
         pass
+    filename = 'log.txt'
+    with open(filename, 'w') as file: # RESETTING LOG.TXT FILE
+        pass
     subprocess.run(["python", "main.py", f"{num_of_processes}", f"{r}", f"{k}"], capture_output=True, text=True)
     time = calculate_timestamp_difference("resultado.txt")
-    result_validation = validate_result(num_of_processes, r)
     print(f"RESULT VALIDATION FOR N = {num_of_processes} ; R = {r} ; K = {k}")
-    print(result_validation)
+    result_validation = validate_result(num_of_processes, r)
     scalability_test_1.append(time)
 
 df = pd.DataFrame(scalability_test_1, columns=['Time'])
@@ -33,11 +35,13 @@ for num_of_processes in n:
     filename = 'resultado.txt'
     with open(filename, 'w') as file:
         pass
+    filename = 'log.txt'
+    with open(filename, 'w') as file:
+        pass
     subprocess.run(["python", "main.py", f"{num_of_processes}", f"{r}", f"{k}"], capture_output=True, text=True)
     time = calculate_timestamp_difference("resultado.txt")
-    result_validation = validate_result(num_of_processes, r)
     print(f"RESULT VALIDATION FOR N = {num_of_processes} ; R = {r} ; K = {k}")
-    print(result_validation)
+    result_validation = validate_result(num_of_processes, r)
     scalability_test_2.append(time)
 
 df = pd.DataFrame(scalability_test_2, columns=['Time'])
@@ -53,11 +57,13 @@ for num_of_processes in n:
     filename = 'resultado.txt'
     with open(filename, 'w') as file:
         pass
+    filename = 'log.txt'
+    with open(filename, 'w') as file:
+        pass
     subprocess.run(["python", "main.py", f"{num_of_processes}", f"{r}", f"{k}"], capture_output=True, text=True)
     time = calculate_timestamp_difference("resultado.txt")
-    result_validation = validate_result(num_of_processes, r)
     print(f"RESULT VALIDATION FOR N = {num_of_processes} ; R = {r} ; K = {k}")
-    print(result_validation)
+    result_validation = validate_result(num_of_processes, r)
     scalability_test_3.append(time)
 
 df = pd.DataFrame(scalability_test_3, columns=['Time'])
@@ -65,4 +71,7 @@ df.to_csv('scalability_test_3.csv', index=False)
 
 # VALIDATE LOG FILE CREATED BY COORDINATOR
 print("LOG VALIDATION")
+# sometimes the log may be invalid because of the iteration above
+# if executed individually, for all possibilities of processes
+# it validates correctly
 validate()
