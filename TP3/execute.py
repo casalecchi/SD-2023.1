@@ -13,9 +13,6 @@ for num_of_processes in n:
     filename = 'resultado.txt'
     with open(filename, 'w') as file: # RESETTING RESULTADO.TXT FILE
         pass
-    filename = 'log.txt'
-    with open(filename, 'w') as file: # RESETTING LOG.TXT FILE
-        pass
     subprocess.run(["python", "main.py", f"{num_of_processes}", f"{r}", f"{k}"], capture_output=True, text=True)
     time = calculate_timestamp_difference("resultado.txt")
     print(f"RESULT VALIDATION FOR N = {num_of_processes} ; R = {r} ; K = {k}")
@@ -35,9 +32,6 @@ for num_of_processes in n:
     filename = 'resultado.txt'
     with open(filename, 'w') as file:
         pass
-    filename = 'log.txt'
-    with open(filename, 'w') as file:
-        pass
     subprocess.run(["python", "main.py", f"{num_of_processes}", f"{r}", f"{k}"], capture_output=True, text=True)
     time = calculate_timestamp_difference("resultado.txt")
     print(f"RESULT VALIDATION FOR N = {num_of_processes} ; R = {r} ; K = {k}")
@@ -55,9 +49,6 @@ scalability_test_3 = []
 for num_of_processes in n:
     print(f"Number of processes {num_of_processes}")
     filename = 'resultado.txt'
-    with open(filename, 'w') as file:
-        pass
-    filename = 'log.txt'
     with open(filename, 'w') as file:
         pass
     subprocess.run(["python", "main.py", f"{num_of_processes}", f"{r}", f"{k}"], capture_output=True, text=True)
